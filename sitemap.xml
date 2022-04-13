@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://twang006.github.io/monolithic/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://twang006.github.io/monolithic/api/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://twang006.github.io/monolithic/changelog/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://twang006.github.io/monolithic/contributing/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://twang006.github.io/monolithic/installation/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://twang006.github.io/monolithic/usage/</loc>
+         <lastmod>2022-04-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
