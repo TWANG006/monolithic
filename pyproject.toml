@@ -48,6 +48,8 @@ bump2version = {version = "^1.0.1", optional = true}
 numpy = "^1.22.3"
 scipy = "^1.8.0"
 h5py = "^3.6.0"
+pyFFTW = "^0.13.0"
+matplotlib = "^3.5.1"
 
 [tool.poetry.extras]
 test = [
