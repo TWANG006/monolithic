@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-'''Statistics of the general metrology data.
+"""Statistics of the general metrology data.
 
 This module gives the statistical calculation of surface data, such as rms, rmse, pv, etc..
 
-'''
+"""
 
 import numpy as np
 
