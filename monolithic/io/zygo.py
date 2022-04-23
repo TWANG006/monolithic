@@ -40,7 +40,7 @@ def read_zygo_datx(file_name: str) -> Dict:
 
         # get a little metadata
         no_data = phase_obj.attrs['No Data'][0]
-        wvl = phase_obj.attrs['Wavelength'][0] * 1e9  # Zygo stores wavelength in meters, we want output in nanometers
+        wvl = phase_obj.attrs['Wavelength'][0]
         punit = phase_obj.attrs['Unit'][0]
         if isinstance(punit, bytes):
             punit = punit.decode('UTF-8')
