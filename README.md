@@ -1,4 +1,4 @@
-# monolith
+# monolithic
 
 
 [![pypi](https://img.shields.io/pypi/v/monolithic.svg)](https://pypi.org/project/monolithic/)
