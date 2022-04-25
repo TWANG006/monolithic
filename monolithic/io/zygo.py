@@ -112,7 +112,7 @@ def _read_zygo_dat_meta(file_contents: bytes) -> Dict:
     meta['sfac_limit'] = struct.unpack(IB16, file_contents[194:196])[0]
     meta['ramp_gain'] = struct.unpack(IB16, file_contents[196:198])[0]
 
-    return {}
+    return meta
 
 
 def read_zygo_datx(file_name: str) -> Dict:
