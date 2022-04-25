@@ -15,6 +15,15 @@ from typing import Dict
 import h5py
 import numpy as np
 
+ZYGO_INVALID_PHASE = 2147483640
+"""int: Value representing the invalid phase."""
+
+ZYGO_ENC = 'utf-8'  # may be ASCII, cp1252...
+"""str: Encoding for the byte."""
+
+ZYGO_PHASE_RES_FACTORS = {0: 4096, 1: 32768, 2: 131072}
+"""dict: Phase resolution factors for Zygo."""
+
 
 def read_zygo_datx(file_name: str) -> Dict:
     """Read the Zygo `.datx` (HDF5) file.
