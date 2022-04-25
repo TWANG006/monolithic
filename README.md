@@ -42,6 +42,13 @@ A python library for ultra-precision optical metrology and fabrication.
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/heej00">
+            <img src="https://avatars.githubusercontent.com/u/60535713?v=4" width="100;" alt="heej00"/>
+            <br />
+            <sub><b>heej00</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/XLKE666">
             <img src="https://avatars.githubusercontent.com/u/85376795?v=4" width="100;" alt="XLKE666"/>
             <br />
