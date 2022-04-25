@@ -10,4 +10,4 @@ def test_read_datx():
     assert h['intensity'] is None
     assert 'phase' in h
     assert 'meta' in h
-    assert 'lateral_resolution' in h['meta']
+    assert 'lateral_res' in h['meta']

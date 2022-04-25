@@ -24,66 +24,47 @@ def read_zygo_datx(file_name: str) -> Dict:
 
     Returns:
         (dict): dict containing phase, intensity, meta
+
     """
     with h5py.File(file_name, 'r') as f:
-        # cast intensity down to int16, saves memory and Zygo doesn't use cameras >> 16-bit
+        # 1. read intensity (if presented)
         try:
-            intens_block = list(f['Data']['Intensity'].keys())[0]
-            intensity = f['Data']['Intensity'][intens_block][()].astype(np.uint16)
+            # get the key of the intensity dataset
+            intensity_key = list(f['Data']['Intensity'].keys())[0]
+            # read everything in as numpy.ndarray using `[()]`
+            intensity = f['Data']['Intensity'][intensity_key][()].astype(np.uint16)
         except (KeyError, OSError):
             intensity = None
 
-        # load phase
-        # find the phase array's H5 group
+        # 2. read phase
+        # get the key of the phase dataset
         phase_key = list(f['Data']['Surface'].keys())[0]
+        # read the phase object including the meta data
         phase_obj = f['Data']['Surface'][phase_key]
 
-        # get a little metadata
+        # read phase-related meta data
         no_data = phase_obj.attrs['No Data'][0]
-        wvl = phase_obj.attrs['Wavelength'][0]
-        punit = phase_obj.attrs['Unit'][0]
-        if isinstance(punit, bytes):
-            punit = punit.decode('UTF-8')
+        wavelength = phase_obj.attrs['Wavelength'][0]
         scale_factor = phase_obj.attrs['Interferometric Scale Factor']
         obliquity = phase_obj.attrs['Obliquity Factor']
-        # get the phase and process it as required
-        phase = phase_obj[()]
-        # step 1, flip (above)
-        # step 2, clip the nans
-        # step 3, convert punit to nm
-        phase[phase >= no_data] = np.nan
-        if punit == 'Fringes':
-            # the usual conversion per malacara
-            phase = phase * obliquity * scale_factor * wvl
-        elif punit == 'NanoMeters':
-            pass
-        else:
-            raise ValueError(
-                "datx file does not use expected phase unit, contact the prysm author with a sample file to resolve"
-            )
 
-        # now get attrs
+        # get the phase and process it as required, clipo nans and convert to meter
+        phase = phase_obj[()]
+        phase[phase >= no_data] = np.nan
+        phase = phase * obliquity * scale_factor * wavelength
+
+        # 3. get attrs
         attrs = f['Attributes']
         key = list(attrs)[-1]
         attrs = attrs[key].attrs
+
+        # read all the attributes
         meta = {}
         for key, value in attrs.items():
-            if key.endswith('Unit'):
-                continue  # do not need unit keys, units implicitly understood.
-
-            if key.startswith("Data Context."):
-                key = key[len("Data Context.") :]
-
-            if key.startswith("Data Attributes."):
-                key = key[len("Data Attributes.") :]
-            if key.endswith('Value'):
-                key = key[:-5]  # strip value from key
-            if key.endswith(':'):
-                key = key[:-1]
-            if key == 'Resolution':
-                key = 'lateral_resolution'
+            if key.startswith("Data Context.Data Attributes."):
+                key = key[len("Data Context.Data Attributes.") :]
             elif key in ['Property Bag List', 'Group Number', 'TextCount']:
-                continue  # h5py particulars
+                continue
             if value.dtype == 'object':
                 value = value[0]
                 if isinstance(value, bytes):
@@ -94,8 +75,19 @@ def read_zygo_datx(file_name: str) -> Dict:
                 value = float(value[0])
             else:
                 continue  # compound items, h5py objects that do not map nicely to primitives
-
+            # insert the valid key, value into the meta dict
             meta[key] = value
+        # save the lateral resolution unit as
+        latral_res_unit = meta['Resolution:Unit']
+        latral_res_value = meta['Resolution:Value']
+        if latral_res_unit == 'MiliMeters':
+            meta['lateral_res'] = latral_res_value * 1e-3
+        elif latral_res_unit == 'MicroMeters':
+            meta['lateral_res'] = latral_res_value * 1e-6
+        elif latral_res_unit == 'NanoMeters':
+            meta['lateral_res'] = latral_res_value * 1e-9
+        else:
+            meta['lateral_res'] = latral_res_value
 
     return {
         'phase': phase,
