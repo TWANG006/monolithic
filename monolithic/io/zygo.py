@@ -26,7 +26,7 @@ ZYGO_PHASE_RES_FACTORS = {0: 4096, 1: 32768, 2: 131072}
 """dict: Phase resolution factors for Zygo."""
 
 
-def read_zygo_dat(file_name: str) -> Dict:
+def read_zygo_dat(file_name: str, multi_intensity_action='first') -> Dict:
     """Read the Zygo `.dat` (Binary) file.
 
     Args:
@@ -36,7 +36,56 @@ def read_zygo_dat(file_name: str) -> Dict:
         (dict): dict containing phase, intensity, meta
 
     """
-    pass
+    # open the binary file
+    with open(file_name, 'rb') as fid:
+        file_contents = fid.read()
+
+    # 1. obtain the meta data
+    meta = _read_zygo_dat_meta(file_contents)
+
+    # 2. read intensity, if presented
+    intens_width = meta['ac_width']
+    intens_height = meta['ac_height']
+    intens_buckets = meta['ac_n_buckets']
+    intens_buckets = 1 if intens_buckets == 0 else intens_buckets
+    intens_size = intens_width * intens_height * intens_buckets
+
+    intensity = None
+    if intens_size > 0:
+        intensity = np.frombuffer(
+            file_contents, offset=meta['header_size'], count=intens_size, dtype=np.uint16
+        ).reshape((intens_buckets, intens_height, intens_width))
+        if multi_intensity_action.lower() == 'avg':
+            intensity = intensity.mean(axis=0)
+        elif multi_intensity_action.lower() == 'first':
+            intensity = intensity[0]
+        elif multi_intensity_action.lower() == 'last':
+            intensity = intensity[-1]
+        else:
+            raise ValueError(
+                f'multi_intensity_action {multi_intensity_action} not among valid options of avg, first, last.'
+            )
+
+    # 3. read phase
+    phase_width = meta['cn_width']
+    phase_height = meta['cn_height']
+    phase_size = phase_width * phase_height
+
+    phase = None
+    if phase_size > 0:
+        phase_raw = np.frombuffer(
+            file_contents, offset=meta['header_size'] + intens_size * 2, count=phase_size, dtype=np.int32
+        )
+        phase = phase_raw.copy().byteswap(True).astype(float).reshape((phase_height, phase_width))
+        phase[phase >= ZYGO_INVALID_PHASE] = np.nan
+        phase *= (
+            meta['scale_factor']
+            * meta['obliquity_factor']
+            * meta['wavelength']
+            / ZYGO_PHASE_RES_FACTORS[meta['phase_res']]
+        )
+
+    return {'phase': phase, 'intensity': intensity, 'meta': meta}
 
 
 def _read_zygo_dat_meta(file_contents: bytes) -> Dict:
@@ -101,8 +150,8 @@ def _read_zygo_dat_meta(file_contents: bytes) -> Dict:
     meta['time_stamp'] = struct.unpack(IB32, file_contents[76:80])[0]
     meta['comment'] = file_contents[80:162].decode(ZYGO_ENC).rstrip(WASTE_BYTE)
     meta['source'] = struct.unpack(IB16, file_contents[162:164])[0]
-    meta['intf_scale_factor'] = struct.unpack(FB32, file_contents[164:168])[0]
-    meta['wavelength_in'] = struct.unpack(FB32, file_contents[168:172])[0]
+    meta['scale_factor'] = struct.unpack(FB32, file_contents[164:168])[0]
+    meta['wavelength'] = struct.unpack(FB32, file_contents[168:172])[0]
     meta['num_aperture'] = struct.unpack(FB32, file_contents[172:176])[0]
     meta['obliquity_factor'] = struct.unpack(FB32, file_contents[176:180])[0]
     meta['magnification'] = struct.unpack(FB32, file_contents[180:184])[0]
