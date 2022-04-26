@@ -41,6 +41,7 @@ def read_zygo_dat(file_name: str) -> Dict:
 
 def _read_zygo_dat_meta(file_contents: bytes) -> Dict:
     """Read the meta data from the Zygo `.dat` (Binary) file.
+
     Args:
         file_contents (bytes): the file contents read from `fid.read()`
 
