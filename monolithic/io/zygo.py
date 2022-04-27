@@ -74,12 +74,14 @@ def read_zygo_binary(file_name: str) -> Tuple:
         Z[p_ys : p_ys + p_height, p_xs : p_xs + p_width] = Z_cropped
         # generate the full aperture grids
         X, Y = np.meshgrid(np.arange(0, Z.shape[1], dtype=float), np.arange(0, Z.shape[0], dtype=float))
-        X = X * data['meta']['lateral_res']
-        Y = Y * data['meta']['lateral_res']
-        Y = np.nanmax(Y) - Y + np.nanmin(Y)
 
-        X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
-        Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+        if X is not None and Y is not None:
+            X = X * data['meta']['lateral_res']
+            Y = Y * data['meta']['lateral_res']
+            Y = np.nanmax(Y) - Y + np.nanmin(Y)
+
+            X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+            Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
 
     return (X, Y, Z, X_cropped, Y_cropped, Z_cropped)
 
