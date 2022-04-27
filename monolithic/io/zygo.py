@@ -76,10 +76,14 @@ def read_zygo_binary(file_name: str) -> Tuple:
         X, Y = np.meshgrid(np.arange(0, Z.shape[1], dtype=float), np.arange(0, Z.shape[0], dtype=float))
         X = X * data['meta']['lateral_res']
         Y = Y * data['meta']['lateral_res']
-        Y = np.nanmax(Y) - Y + np.nanmin(Y)
 
-        X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+        # write like this to cancel mypy complaints
+        assert Y is not None
+        Y = np.nanmax(Y) - Y + np.nanmin(Y)
+        assert Y is not None
         Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+        assert X is not None
+        X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
 
     return (X, Y, Z, X_cropped, Y_cropped, Z_cropped)
 
