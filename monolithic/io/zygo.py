@@ -53,10 +53,10 @@ def read_zygo_binary(file_name: str) -> Tuple:
         raise ValueError(f'{file_extension} is not a valid Zygo binary file extension.')
 
     # embed phase into the full aperture, if available
-    X, Y, Z = None, None, None
     Z_cropped = data['phase']
     # only phase is presented
     if data['intensity'] is None:
+        X, Y, Z = None, None, None
         X_cropped, Y_cropped = np.meshgrid(
             np.arange(0, Z_cropped.shape[1], dtype=float), np.arange(0, Z_cropped.shape[0], dtype=float)
         )
