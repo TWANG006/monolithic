@@ -61,6 +61,13 @@ A python library for ultra-precision optical metrology and fabrication.
             <br />
             <sub><b>GHVipender</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/optjcs">
+            <img src="https://avatars.githubusercontent.com/u/103858275?v=4" width="100;" alt="optjcs"/>
+            <br />
+            <sub><b>optjcs</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: collaborators -end -->
