@@ -10,8 +10,9 @@ Credits:
 
 """
 
+import pathlib
 import struct
-from typing import Dict
+from typing import Dict, Tuple
 
 import h5py
 import numpy as np
@@ -26,7 +27,64 @@ ZYGO_PHASE_RES_FACTORS = {0: 4096, 1: 32768, 2: 131072}
 """dict: Phase resolution factors for Zygo."""
 
 
-def read_zygo_dat(file_name: str, multi_intensity_action='first') -> Dict:
+def read_zygo_binary(file_name: str) -> Tuple:
+    """Read the Zygo binary file formates (.dat and .datx).
+
+    Args:
+        file_name (str): the file name of the binary file.
+
+    Returns:
+        (tuple): tuple containing:
+            X (numpy.ndarray): x coordinates of the full aperture.
+            Y (numpy.ndarray): y coordinates of the full aperture.
+            Z (numpy.ndarray): height in the full aperture.
+            X_cropped (numpy.ndarray): x coordinates of the cropped aperture.
+            Y_cropped (numpy.ndarray): y coordinates of the cropped aperture.
+            Z_cropped (numpy.ndarray): height in the cropped aperture.
+
+    """
+    # get the file extension and call the respective read function
+    file_extension = pathlib.Path(file_name).suffix
+    if file_extension == '.dat':
+        data = read_zygo_dat(file_name)
+    elif file_extension == '.datx':
+        data = read_zygo_datx(file_name)
+    else:
+        raise ValueError(f'{file_extension} is not a valid Zygo binary file extension.')
+
+    # embed phase into the full aperture, if available
+    X, Y, Z = None, None, None
+    Z_cropped = data['phase']
+    # only phase is presented
+    if data['intensity'] is None:
+        X_cropped, Y_cropped = np.meshgrid(
+            np.arange(0, Z_cropped.shape[1], dtype=float), np.arange(0, Z_cropped.shape[0], dtype=float)
+        )
+        X_cropped = X_cropped * data['meta']['lateral_res']
+        Y_cropped = Y_cropped * data['meta']['lateral_res']
+        Y_cropped = np.nanmax(Y_cropped) - Y_cropped + np.nanmin(Y_cropped)
+    # both intensity & phase are presented
+    else:
+        p_ys = data['meta']['cn_org_x']
+        p_xs = data['meta']['cn_org_y']
+        p_height = data['meta']['cn_height']
+        p_width = data['meta']['cn_width']
+        # feed the phase to the full aperture
+        Z = np.full((data['meta']['ac_height'], data['meta']['ac_width']), fill_value=np.nan)
+        Z[p_ys : p_ys + p_height, p_xs : p_xs + p_width] = Z_cropped
+        # generate the full aperture grids
+        X, Y = np.meshgrid(np.arange(0, Z.shape[1], dtype=float), np.arange(0, Z.shape[0], dtype=float))
+        X = X * data['meta']['lateral_res']
+        Y = Y * data['meta']['lateral_res']
+        Y = np.nanmax(Y) - Y + np.nanmin(Y)
+
+        X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+        Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+
+    return (X, Y, Z, X_cropped, Y_cropped, Z_cropped)
+
+
+def read_zygo_dat(file_name: str) -> Dict:
     """Read the Zygo `.dat` (Binary) file.
 
     Args:
@@ -55,16 +113,6 @@ def read_zygo_dat(file_name: str, multi_intensity_action='first') -> Dict:
         intensity = np.frombuffer(
             file_contents, offset=meta['header_size'], count=intens_size, dtype=np.uint16
         ).reshape((intens_buckets, intens_height, intens_width))
-        if multi_intensity_action.lower() == 'avg':
-            intensity = intensity.mean(axis=0)
-        elif multi_intensity_action.lower() == 'first':
-            intensity = intensity[0]
-        elif multi_intensity_action.lower() == 'last':
-            intensity = intensity[-1]
-        else:
-            raise ValueError(
-                f'multi_intensity_action {multi_intensity_action} not among valid options of avg, first, last.'
-            )
 
     # 3. read phase
     phase_width = meta['cn_width']
