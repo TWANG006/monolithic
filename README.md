@@ -66,7 +66,7 @@ A python library for ultra-precision optical metrology and fabrication.
         <a href="https://github.com/optjcs">
             <img src="https://avatars.githubusercontent.com/u/103858275?v=4" width="100;" alt="optjcs"/>
             <br />
-            <sub><b>optjcs</b></sub>
+            <sub><b>Optjcs</b></sub>
         </a>
     </td></tr>
 </table>
