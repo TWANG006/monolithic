@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from monolithic.math import fwhm_2_sigma, prr, pv, rmse, sigma_2_fwhm, vrr
+from monolithic.math import fft_1d, fft_2d, fwhm_2_sigma, ifft_1d, ifft_2d, prr, pv, rmse, sigma_2_fwhm, vrr
 
 
 def test_rmse():
@@ -43,3 +43,15 @@ def test_sigma_2_fwhm():
     """Test the sigma_2_fwhm function."""
     sigma = np.array([2.12, 2.12])
     assert np.round(sigma_2_fwhm(sigma))[1] == 5
+
+
+def test_ftt_ifft_1d():
+    """Test the forward and inverse Fourier transform."""
+    a_test = np.array([1, 2, 3, 4, 5])
+    assert (a_test - ifft_1d(fft_1d(a_test))).all() <= 1e-7
+
+
+def test_ftt_ifft_2d():
+    """Test the forward and inverse Fourier transform."""
+    a_test = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
+    assert (a_test - np.real(ifft_2d(fft_2d(a_test)))).all() <= 1e-7
