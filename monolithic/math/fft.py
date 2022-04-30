@@ -20,7 +20,7 @@ def fft_1d(a: np.ndarray, n: int = None, axis: int = -1):
     Returns:
         complex numpy.ndarray: transformed input along the axis.
     """
-    fft_obj = fft(a=a, n=n, axis=-1, planner_effort='FFTW_ESTIMATE')
+    fft_obj = fft(a=a, n=n, axis=axis, planner_effort='FFTW_ESTIMATE')
     return fft_obj()
 
 
