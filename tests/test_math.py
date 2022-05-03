@@ -2,7 +2,19 @@
 
 import numpy as np
 
-from monolithic.math import fft_1d, fft_2d, fwhm_2_sigma, ifft_1d, ifft_2d, prr, pv, rmse, sigma_2_fwhm, vrr
+from monolithic.math import (
+    fft_1d,
+    fft_2d,
+    fwhm_2_sigma,
+    ifft_1d,
+    ifft_2d,
+    prr,
+    pv,
+    rmse,
+    sigma_2_fwhm,
+    vrr,
+    window_function,
+)
 
 
 def test_rmse():
@@ -55,3 +67,19 @@ def test_ftt_ifft_2d():
     """Test the forward and inverse Fourier transform."""
     a_test = np.array([[1, 2, 3, 4, 5], [6, 7, 8, 9, 10]])
     assert (a_test - np.real(ifft_2d(fft_2d(a_test)))).all() <= 1e-7
+
+
+def test_psd_window_function():
+    """Test the window function."""
+    n = 5
+    win_welch = np.array([0, 0.75, 1, 0.75, 0])
+    win_hann = np.array([0, 0.5, 1, 0.5, 0])
+    win_none = np.ones(n)
+
+    win_welch_calc = window_function(n, 'welch')
+    win_hann_calc = window_function(n, 'hann')
+    win_none_calc = window_function(n, 'none')
+
+    assert np.abs((win_welch - win_welch_calc)).all() <= 1e-7
+    assert np.abs((win_hann - win_hann_calc)).all() <= 1e-7
+    assert np.abs((win_none - win_none_calc)).all() <= 1e-7
