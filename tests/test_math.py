@@ -1,7 +1,9 @@
 """Tests for the `math` sub-module."""
 
+import matplotlib.pyplot as plt
 import numpy as np
 
+from monolithic.io import read_zygo_binary
 from monolithic.math import (
     fft_1d,
     fft_2d,
@@ -9,6 +11,7 @@ from monolithic.math import (
     ifft_1d,
     ifft_2d,
     prr,
+    psd_1d,
     pv,
     rmse,
     sigma_2_fwhm,
@@ -83,3 +86,15 @@ def test_psd_window_function():
     assert np.abs((win_welch - win_welch_calc)).all() <= 1e-7
     assert np.abs((win_hann - win_hann_calc)).all() <= 1e-7
     assert np.abs((win_none - win_none_calc)).all() <= 1e-7
+
+
+def test_psd_1d():
+    """Test the psd_1d function."""
+    _, _, _, Xca, _, Zca = read_zygo_binary('./data/zygo_test.dat')
+    pixel_size = np.median(np.diff(Xca[1, :]))
+    q, cq_1d, int_cq_1d = psd_1d(Zca[300:401, 300:401], pixel_size, 'x', 'welch')
+
+    _, ax = plt.subplots(1, 2)
+    ax[0].loglog(q * 1e-3, cq_1d * 1e21)
+    ax[1].loglog(q * 1e-3, int_cq_1d * 1e9)
+    plt.show()
