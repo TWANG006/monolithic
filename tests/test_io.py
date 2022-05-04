@@ -8,10 +8,16 @@ def test_read_zygo_binary():
     X, Y, Z, Xca, Yca, Zca = read_zygo_binary('./data/zygo_test.dat')
     assert X is not None and Y is not None and Z is not None
     assert Xca.shape == Yca.shape == Zca.shape
+    assert X.shape != Xca.shape
+    assert Y.shape != Yca.shape
+    assert Z.shape != Zca.shape
 
     X, Y, Z, Xca, Yca, Zca = read_zygo_binary('./data/zygo_test.datx')
-    assert X is None and Y is None and Z is None
+    assert X is not None and Y is not None and Z is not None
     assert Xca.shape == Yca.shape == Zca.shape
+    assert X.shape == Xca.shape
+    assert Y.shape == Yca.shape
+    assert Z.shape == Zca.shape
 
 
 def test_read_datx():

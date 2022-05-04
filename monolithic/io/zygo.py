@@ -53,37 +53,42 @@ def read_zygo_binary(file_name: str) -> Tuple:
         raise ValueError(f'{file_extension} is not a valid Zygo binary file extension.')
 
     # embed phase into the full aperture, if available
-    Z_cropped = data['phase']
+    Z_intensity = data['intensity']
+    Z_phase = data['phase']
+
     # only phase is presented
-    if data['intensity'] is None:
-        X, Y, Z = None, None, None
+    if Z_intensity is None:
+        Z_cropped = Z_phase
         X_cropped, Y_cropped = np.meshgrid(
             np.arange(0, Z_cropped.shape[1], dtype=float), np.arange(0, Z_cropped.shape[0], dtype=float)
         )
         X_cropped = X_cropped * data['meta']['lateral_res']
         Y_cropped = Y_cropped * data['meta']['lateral_res']
         Y_cropped = np.nanmax(Y_cropped) - Y_cropped + np.nanmin(Y_cropped)
+        X, Y, Z = X_cropped, Y_cropped, Z_cropped
     # both intensity & phase are presented
     else:
-        p_ys = data['meta']['cn_org_x']
-        p_xs = data['meta']['cn_org_y']
-        p_height = data['meta']['cn_height']
-        p_width = data['meta']['cn_width']
-        # feed the phase to the full aperture
-        Z = np.full((data['meta']['ac_height'], data['meta']['ac_width']), fill_value=np.nan)
-        Z[p_ys : p_ys + p_height, p_xs : p_xs + p_width] = Z_cropped
-        # generate the full aperture grids
-        X, Y = np.meshgrid(np.arange(0, Z.shape[1], dtype=float), np.arange(0, Z.shape[0], dtype=float))
+        # assigne phase
+        Z_cropped = Z_phase
+        # work with the full aperture
+        m, n = Z_intensity[0].shape
+        Z = np.full((m, n), fill_value=np.nan)
+        X, Y = np.meshgrid(np.arange(0, n, dtype=float), np.arange(0, m, dtype=float))
         X = X * data['meta']['lateral_res']
         Y = Y * data['meta']['lateral_res']
-
-        # write like this to cancel mypy complaints
-        assert Y is not None
         Y = np.nanmax(Y) - Y + np.nanmin(Y)
-        assert Y is not None
-        Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
-        assert X is not None
-        X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+        # work with clear aperture
+        if Z_intensity.shape == Z_phase.shape:
+            X_cropped, Y_cropped, Z_cropped = X, Y, Z
+        else:
+            p_ys = data['meta']['cn_org_x']
+            p_xs = data['meta']['cn_org_y']
+            p_height = data['meta']['cn_height']
+            p_width = data['meta']['cn_width']
+            # feed the phase to the full aperture
+            Z[p_ys : p_ys + p_height, p_xs : p_xs + p_width] = Z_cropped
+            Y_cropped = Y[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
+            X_cropped = X[p_ys : p_ys + p_height, p_xs : p_xs + p_width]
 
     return (X, Y, Z, X_cropped, Y_cropped, Z_cropped)
 
