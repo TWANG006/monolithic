@@ -1,6 +1,6 @@
 """Tests for the `math` sub-module."""
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 
 from monolithic.io import read_zygo_binary
@@ -94,7 +94,7 @@ def test_psd_1d():
     pixel_size = np.median(np.diff(Xca[1, :]))
     q, cq_1d, int_cq_1d = psd_1d(Zca[300:401, 300:401], pixel_size, 'x', 'welch')
 
-    _, ax = plt.subplots(1, 2)
-    ax[0].loglog(q * 1e-3, cq_1d * 1e21)
-    ax[1].loglog(q * 1e-3, int_cq_1d * 1e9)
-    plt.show()
+    # _, ax = plt.subplots(1, 2)
+    # ax[0].loglog(q * 1e-3, cq_1d * 1e21)
+    # ax[1].loglog(q * 1e-3, int_cq_1d * 1e9)
+    # plt.show()
