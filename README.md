@@ -19,7 +19,17 @@ A python library for ultra-precision optical metrology and fabrication.
 
 ## Features
 
-* TODO
+* IO:
+    * read Zygo binary (`.dat` and `.datx`) files
+* math: 
+    * FFT: faster Fourier transform with pyFFTW.
+    * PSD: formalized PSD calculation.
+    * Removes: polynomial fitting and removal.
+    * Statistics: evaluations for the measurement data.
+* TIF: TODO
+* Dwell Time: TODO
+* Tool Path: TODO
+* Plot: easy-to-use visualizations of every object in monolithic
 
 
 ## Collaborators
