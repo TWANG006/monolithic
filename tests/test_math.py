@@ -13,6 +13,7 @@ from monolithic.math import (
     prr,
     psd_1d,
     pv,
+    remove_surface,
     rmse,
     sigma_2_fwhm,
     vrr,
@@ -98,3 +99,14 @@ def test_psd_1d():
     # ax[0].loglog(q * 1e-3, cq_1d * 1e21)
     # ax[1].loglog(q * 1e-3, int_cq_1d * 1e9)
     # plt.show()
+
+
+def test_remove_surface():
+    """Test the `remove_surface` function."""
+    X, Y, Z, _, _, _ = read_zygo_binary('./data/zygo_test.dat')
+    (
+        Z,
+        _,
+        _,
+    ) = remove_surface(X, Y, Z)
+    assert np.nanmean(Z) <= 1e-15
