@@ -14,6 +14,7 @@ from monolithic.math import (
     psd_1d,
     pv,
     remove_polynomials,
+    remove_sphere,
     remove_surface,
     rmse,
     sigma_2_fwhm,
@@ -109,6 +110,7 @@ def test_remove_surface():
         Z,
         _,
         _,
+        _,
     ) = remove_surface(X, Y, Z)
     assert np.nanmean(Z) <= 1e-15
 
@@ -120,5 +122,20 @@ def test_remove_polynomials():
         Z,
         _,
         _,
+        _,
     ) = remove_polynomials(X, Y, Z, p=1)
     assert np.nanmean(Z) <= 1e-15
+
+
+def test_remove_sphere():
+    """Test the `remove_sphere` function."""
+    X, Y, Z, _, _, _ = read_zygo_binary('./data/zygo_test.dat')
+    (
+        Z,
+        _,
+        _,
+        coeffs,
+    ) = remove_sphere(X, Y, Z)
+    Rx = 1 / coeffs[3] * 0.5
+    Ry = 1 / coeffs[4] * 0.5
+    assert Rx < 0 and Ry > 0
