@@ -75,7 +75,7 @@ def psd_1d(z: np.ndarray, pixel_size: float, dim: str = 'x', win_type: str = 'we
 
     # generate a window function
     win = np.ones((m, 1)) * np.atleast_2d(window_function(n, win_type.lower()))
-    norm_factor = np.sum(win[0, :] * win[0, :]) / (m - 1)  # normalization for win
+    norm_factor = np.sum(win[0, :] * win[0, :]) / (n - 1)  # normalization for win
     Zwin = Z * win  # windowed surface height
 
     # calculate 1D PSDs
