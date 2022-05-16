@@ -126,3 +126,37 @@ def remove_sphere(X: np.ndarray, Y: np.ndarray, Z: np.ndarray) -> Tuple:
     Zres = Z - Z_fit
 
     return Zres, Z_fit, fit_func, coeffs
+
+
+def remove_tilt(x: np.ndarray, z: np.ndarray):
+    """Removes a 2D tilt from the surface profile.
+
+    Args:
+        x (numpy.ndarray): x coordinates.
+        z (numpy.ndarray): height profile.
+
+    Returns:
+        (tuple): tuple containing:
+            z_res (nupmy.ndarray): tilt-removed height profile.
+            z_fit (numpy.ndarray): fitted height profile.
+            fit_func (function): the fitting function.
+            coeffs (numpy.ndarray): fitting coefficients.
+    """
+    # remove the invalid entries
+    id = np.isfinite(z)
+    z_to_fit = z[id].reshape(-1, 1)
+    x_to_fit = x[id].reshape(-1, 1)
+
+    # build the matrix
+    H = np.column_stack((np.ones_like(x_to_fit), x_to_fit))
+
+    # solv the linear system
+    coeffs, _, _, _ = lstsq(H, z_to_fit, check_finite=False)
+
+    def fit_func(x):
+        return coeffs[0] + coeffs[1] * x
+
+    z_fit = fit_func(x)
+    z_res = z - z_fit
+
+    return z_res, z_fit, fit_func, coeffs

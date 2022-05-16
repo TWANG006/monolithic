@@ -2,7 +2,7 @@
 
 from .fft import fft_1d, fft_2d, ifft_1d, ifft_2d
 from .psd import psd_1d, window_function
-from .removes import remove_polynomials, remove_sphere, remove_surface
+from .removes import remove_polynomials, remove_sphere, remove_surface, remove_tilt
 from .statistics import prr, pv, rmse, vrr
 from .utils import fwhm_2_sigma, sigma_2_fwhm
 
@@ -16,6 +16,7 @@ __all__ = [
     'remove_polynomials',
     'remove_sphere',
     'remove_surface',
+    'remove_tilt',
     'rmse',
     'pv',
     'prr',

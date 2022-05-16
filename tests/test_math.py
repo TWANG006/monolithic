@@ -16,6 +16,7 @@ from monolithic.math import (
     remove_polynomials,
     remove_sphere,
     remove_surface,
+    remove_tilt,
     rmse,
     sigma_2_fwhm,
     vrr,
@@ -139,3 +140,15 @@ def test_remove_sphere():
     Rx = 1 / coeffs[3] * 0.5
     Ry = 1 / coeffs[4] * 0.5
     assert Rx < 0 and Ry > 0
+
+
+def test_remove_tilt():
+    """Test the `remove_tilt` function."""
+    _, _, _, X, _, Z = read_zygo_binary('./data/zygo_test.dat')
+
+    x = X[300, :]
+    z = Z[300, :]
+
+    z_res, _, _, _ = remove_tilt(x, z)
+
+    assert np.nanmean(z_res) <= 1e-15
