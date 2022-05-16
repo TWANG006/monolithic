@@ -84,7 +84,7 @@ A python library for ultra-precision optical metrology and fabrication.
         <a href="https://github.com/ccAqq">
             <img src="https://avatars.githubusercontent.com/u/103986535?v=4" width="100;" alt="ccAqq"/>
             <br />
-            <sub><b>ccAqq</b></sub>
+            <sub><b>CcAqq</b></sub>
         </a>
     </td></tr>
 </table>
