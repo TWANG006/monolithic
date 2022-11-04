@@ -7,6 +7,17 @@ This module gives the statistical calculation of surface data, such as rms, rmse
 
 import numpy as np
 
+def rms(x: np.ndarray) -> float:
+    """Calculate the RMS of all the element in the input data.
+
+    Args:
+        x (numpy.ndarray): the input `numpy` array of data.
+
+    Returns:
+        float: the RMS error of all the element in x.
+    """
+    return np.sqrt(np.nanmean(np.square(x.ravel())))
+
 
 def rmse(x: np.ndarray) -> float:
     """Calculate the RMS error of all the element in the input data.
