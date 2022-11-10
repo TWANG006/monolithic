@@ -134,24 +134,4 @@ def ite(H0,R,VR,g,s):
 
 E,D = ite(H0,R,VR,g,s)
 
-show_surface_map(X,Y,E)
-show_surface_map(X,Y,D,title='Dwelltime')
-
-fig=plt.figure()
-ax = Axes3D(fig)
-ax.plot_surface(X, Y, E,cmap='rainbow',rstride=1, cstride=1)
-ax.set_xlabel("x")
-ax.set_ylabel("y")
-ax.set_zlabel("z")
-# plt.title('fitted')
-
-fig=plt.figure()
-ax = Axes3D(fig)
-ax.plot_surface(X, Y, D,cmap='rainbow',rstride=1, cstride=1)
-ax.set_xlabel("x")
-ax.set_ylabel("y")
-ax.set_zlabel("z")
-plt.title('dwell time')
-
-plt.show()
 
