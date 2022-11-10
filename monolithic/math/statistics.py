@@ -18,7 +18,6 @@ def rms(x: np.ndarray) -> float:
     """
     return np.sqrt(np.nanmean(np.square(x.ravel())))
 
-
 def rmse(x: np.ndarray) -> float:
     """Calculate the RMS error of all the element in the input data.
 

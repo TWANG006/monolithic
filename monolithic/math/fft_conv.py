@@ -1,37 +1,10 @@
-from ast import mod
-from audioop import rms
-from time import process_time_ns
-from tkinter import E
-import numpy as np
-import scipy.optimize.optimize
-from matplotlib import pyplot as plt
-from scipy.interpolate import interpn
-from scipy.interpolate import griddata
-import scipy.io as sio
-from scipy import interpolate
-import pandas as pd
-from numpy import size
-from numpy import squeeze
-from matplotlib import cm
-import copy
-import re
-from scipy.fftpack import fft
-from sklearn import preprocessing
-import operator
-from functools import reduce
-from scipy.sparse import csc_matrix
-from scipy.sparse.linalg import lsqr
-from scipy.optimize import linprog
-import matplotlib
-from mpl_toolkits.mplot3d import Axes3D
-import struct
-import math
-from monolithic.math.statistics import rmse, vrr
-from scipy import *
-from scipy import signal
-from numpy.fft import fft,ifft,fft2,ifft2,ifftshift,fftshift
 
 """ fft_1d,fft_2d"""
+
+import numpy as np
+from scipy.fftpack import fft
+from numpy.fft import fft,ifft,fft2,ifft2
+
 
 def fast_zero_padding_1d(f, m):
     """

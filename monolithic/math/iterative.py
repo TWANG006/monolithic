@@ -1,14 +1,8 @@
 from audioop import rms
-from time import process_time_ns
-from tkinter import E
 import numpy as np
-import scipy.optimize.optimize
 from matplotlib import pyplot as plt
-from scipy.interpolate import interpn
-from scipy.interpolate import griddata
 import scipy.io as sio
-import math
-from monolithic.math.statistics import rmse, vrr,pv
+from monolithic.math.statistics import rmse, vrr,pv,rms
 from scipy import *
 from scipy import signal
 from monolithic.plot import show_surface_map
@@ -84,16 +78,16 @@ dx = 20  # x,y:tif的区域
 dy = 20
 VR = 1 #vrr(R,dx,dy) # 去除函数的体积去除率,确定初始停留时间和停留时间的修正量
 
-def rms(x: np.ndarray) -> float:
-    """Calculate the RMS of all the element in the input data.
+# def rms(x: np.ndarray) -> float:
+#     """Calculate the RMS of all the element in the input data.
 
-    Args:
-        x (numpy.ndarray): the input `numpy` array of data.
+#     Args:
+#         x (numpy.ndarray): the input `numpy` array of data.
 
-    Returns:
-        float: the RMS error of all the element in x.
-    """
-    return np.sqrt(np.nanmean(np.square(x.ravel())))
+#     Returns:
+#         float: the RMS error of all the element in x.
+#     """
+#     return np.sqrt(np.nanmean(np.square(x.ravel())))
 
 # R:单位时间内的去除函数  H0:所需的去除物  R，D的二维卷积
 # g阻尼因子,值≤1时，g值越大收敛速度越快，而g值过大则迭代发散;s是g的修正系数,s的值最好是接近1的值
@@ -134,4 +128,5 @@ def ite(H0,R,VR,g,s):
 
 E,D = ite(H0,R,VR,g,s)
 
-
+plt.pcolormesh(D)
+plt.show()
