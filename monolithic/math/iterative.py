@@ -93,14 +93,14 @@ def iterative(H0,R,VR,g,s):
     k = 0
     a = np.fix(len(R)/4).astype(int)
     while 1:
-        E0 = E[a:-a,a:-a]
-        E1 = iterative_1(E,H0,R,VR,D,g)[0][a:-a,a:-a]
-        if rms(E1) / rms(E0) >= 0.9999:  #若残差收敛比接近于1，则终止迭代
+        EE0 = E[a:-a,a:-a]
+        EE1 = iterative_1(E,H0,R,VR,D,g)[0][a:-a,a:-a]
+        if rms(EE1) / rms(EE0) >= 0.9999:  #若残差收敛比接近于1，则终止迭代
             E,D = iterative_1(E,H0,R,VR,D,g)
             break
         else : 
-            if rms(E0) < rms(E1) :  #迭代后的RMS比上一次RMS差
-                if rms(E0)/rms(H0) < 0.1:  #如果残差收敛比小于0.1，则终止迭代
+            if rms(EE0) < rms(EE1) :  #迭代后的RMS比上一次RMS差
+                if rms(EE0)/rms(E0) < 0.1:  #如果残差收敛比小于0.1，则终止迭代
                     E,D = iterative_1(E,H0,R,VR,D,g)
                     break
                 else:
