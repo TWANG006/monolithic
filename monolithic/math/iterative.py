@@ -61,11 +61,7 @@ dx = 21  # x,y:tif的区域
 dy = 21
 VR =  vrr(R,dx,dy) # 去除函数的体积去除率,确定初始停留时间和停留时间的修正量
 
-<<<<<<< Updated upstream
-
-=======
 """初代迭代驻留时间算法"""
->>>>>>> Stashed changes
 def iterative_1(E,H0,R,VR,D,g):
     deltak = E / VR  #：Δ_k为本次迭代的驻留时间校正值
     D = D + g*deltak #总的驻留时间矩阵：上次迭代时的驻留时间+本次迭代的驻留时间校正值*松弛因子
@@ -75,11 +71,7 @@ def iterative_1(E,H0,R,VR,D,g):
 
 # R:单位时间内的去除函数  H0:所需的去除物  H为R，D的二维卷积
 # g阻尼因子,值≤1时，g值越大收敛速度越快，而g值过大则迭代发散;s是g的修正系数,s的值最好是接近1的值
-<<<<<<< Updated upstream
-def iterative(H0,R,VR,g,s):
-=======
 def iterative_method(H0,R,VR,g,s):
->>>>>>> Stashed changes
     """迭代计算驻留时间
     Args:
         H0 (numpy.ndarray): the input `numpy` array of data.
@@ -120,10 +112,6 @@ def iterative_method(H0,R,VR,g,s):
         
     return E,D 
 
-<<<<<<< Updated upstream
-E,D = iterative(H0,R,VR,g,s)
-
-=======
 """改进的迭代驻留时间算法"""
 def iterative(Z_residual,Z,Ztif,Vrr,D,kxi):
     """
@@ -264,4 +252,3 @@ def iterative(R,H_MRR,VR):
     return E0,TT,kk 
 
 E,D = iterative_method(H0,R,VR,g,s)
->>>>>>> Stashed changes
